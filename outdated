@@ -1,0 +1,2 @@
+sudo scratch outdate | grep -v masked
+echo "Done checking for outdated packages"
