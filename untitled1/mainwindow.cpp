@@ -72,7 +72,7 @@ ui->listWidget->resize(MainWindow::width()-30,300);
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox msgbox;
-    msgbox.setText("Voncloft Package Manager - Version 1.0");
+    msgbox.setText("Voncloft Package Manager - Version 1.0 - A front end gui for scratchpkg");
     msgbox.exec();
 }
 
