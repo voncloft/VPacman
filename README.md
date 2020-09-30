@@ -19,5 +19,10 @@ This project comes with no warranty - if you think you can do better or add an i
 
 This project when compiled will create a file named untitled1 you can rename it to something else and put it in /usr/bin and it will be an executable you can bring up.
 
+More than likely you will need to add yourself to the sudo group and for the /etc/sudoers you will need to add:
+your_user_name ALL=(ALL) NOPASSWD: ALL
+
+Probably not security smart - but I am the only one on my PC.
+
 Dependencies needed:
 QT 5.15.1
