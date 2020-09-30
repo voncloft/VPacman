@@ -27,3 +27,4 @@ Probably not security smart - but I am the only one on my PC.
 
 Dependencies needed:
 QT 5.15.1
+scratchpkg
