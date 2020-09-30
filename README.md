@@ -17,5 +17,7 @@ My personal desktop that this works on is KDE/Plasma with QT.
 
 This project comes with no warranty - if you think you can do better or add an improvement please let me know so I can add to the project and reupload to the repository.
 
+This project when compiled will create a file named untitled1 you can rename it to something else and put it in /usr/bin and it will be an executable you can bring up.
+
 Dependencies needed:
 QT 5.15.1
