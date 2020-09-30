@@ -11,6 +11,11 @@ This program was created in qt creator.
 
 The folder name is unfortunately called untitled1 - I did this as a "test" project 
 
-It "might" be buggy - this is just a project I chose to do in my spare time.
+It "might" be buggy - this is just a project I chose to do in my spare time. 
+
+My personal desktop that this works on is KDE/Plasma with QT.
 
 This project comes with no warranty - if you think you can do better or add an improvement please let me know so I can add to the project and reupload to the repository.
+
+Dependencies needed:
+QT 5.15.1
