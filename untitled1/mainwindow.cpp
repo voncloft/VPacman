@@ -66,6 +66,9 @@ void MainWindow::command(QString text)
 }
 void MainWindow::resizeEvent(QResizeEvent*)
 {
+
+
+ui->plainTextEdit->setGeometry(MainWindow::width()-300,0,280,40);
 ui->textEdit->resize(MainWindow::width()-30,MainWindow::height()-30);
 ui->listWidget->resize(MainWindow::width()-30,300);
 }
@@ -74,7 +77,8 @@ ui->listWidget->resize(MainWindow::width()-30,300);
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox msgbox;
-    msgbox.setText("Voncloft Package Manager - Version 1.0 - A front end gui for scratchpkg");
+    msgbox.setWindowTitle("VPacman");
+    msgbox.setText("Voncloft Package Manager - Version 2.2 - A front end gui for scratchpkg");
     msgbox.exec();
 }
 
