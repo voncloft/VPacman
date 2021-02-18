@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.13.82, 2021-02-17T22:50:00. -->
+<!-- Written by QtCreator 4.13.82, 2021-02-17T20:52:16. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{2e366fea-1127-475a-b07e-bb16f896f7c7}</value>
+  <value type="QByteArray">{c39be578-3404-4875-981f-a7d968c88010}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -86,9 +86,9 @@
   <variable>ProjectExplorer.Project.Target.0</variable>
   <valuemap type="QVariantMap">
    <value type="QString" key="DeviceType">Desktop</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Replacement for &quot;Qt 5.15.1 (qt5)&quot;</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Replacement for &quot;Qt 5.15.1 (qt5)&quot;</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{94e4242c-986a-47aa-94ac-4a058c2d8964}</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Qt 5.15.1 (qt5)</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Qt 5.15.1 (qt5)</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{ec0214bf-1b0b-4010-800f-77ddd8990f1b}</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>

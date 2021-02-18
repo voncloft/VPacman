@@ -50,9 +50,12 @@ private slots:
 
     void on_pushButton_2_clicked();
     void loadPackages();
+    void searchPackages(QString term);
     void on_pushButton_3_clicked();
 
     void on_pushButton_4_clicked();
+
+    void on_plainTextEdit_textChanged();
 
 private:
     Ui::MainWindow *ui;
