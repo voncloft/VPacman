@@ -43,12 +43,17 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_pushButton_clicked()
 {
-    command("sudo /usr/bin/scratch install -yc "+test);
+    command("sudo /usr/bin/scratch install -yc " + test);
+    //command ("echo test");
+    QMessageBox msgbox;
+    msgbox.setText("sudo /usr/bin/scratch install -yc " + test);
+    //msgbox.exec();
 }
 
 void::MainWindow::setStdout()
 {
     ui->textEdit->append( m_process->readAllStandardOutput() );
+
 }
 void MainWindow::command(QString text)
 {
@@ -57,12 +62,15 @@ void MainWindow::command(QString text)
     if(QSysInfo::productType()=="windows")
         strCommand = "cmd /C ";
 
-    strCommand = "y | sudo /usr/bin/scratch install -y "+test;
+    //strCommand = "y | sudo /usr/bin/scratch install -y " + test;
+    strCommand=test;
+
     QMessageBox msgbox;
     msgbox.setText(text);
     //msgbox.exec();
-    //m_process->start(text);
+    m_process->start(text);
     test.clear();
+
 }
 void MainWindow::resizeEvent(QResizeEvent*)
 {

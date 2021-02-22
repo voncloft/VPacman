@@ -58,6 +58,8 @@ public:
         textEdit = new QTextEdit(centralwidget);
         textEdit->setObjectName(QString::fromUtf8("textEdit"));
         textEdit->setGeometry(QRect(10, 420, 104, 87));
+        textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        textEdit->setReadOnly(true);
         pushButton_2 = new QPushButton(centralwidget);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
         pushButton_2->setGeometry(QRect(95, 360, 84, 43));
