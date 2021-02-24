@@ -104,8 +104,7 @@ void MainWindow::loadPackages()
     QDirIterator dirIts("/var/lib/scratchpkg",QDirIterator::Subdirectories);
     QMessageBox msgbox;
     ui->listWidget->clear();
-    //msgbox.setText(dirIt.fileName());
-    //msgbox.exec();
+
         while (dirIt.hasNext())
         {
 
@@ -118,6 +117,8 @@ void MainWindow::loadPackages()
                 }
                 else
                 {
+                    //msgbox.setText(dirIt.fileName());
+                    //msgbox.exec();
                     if (QFileInfo(dirIt.filePath()).isFile())
                     {
                     }
@@ -132,7 +133,7 @@ void MainWindow::loadPackages()
                         int i;
                         QString description;
                         QString version;
-
+                        QString names;
                         if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
                                 QTextStream stream(&file);
                                 while (!stream.atEnd()){
@@ -150,6 +151,7 @@ void MainWindow::loadPackages()
                                     }
 
 
+
                                 }
                             }
                             file.close();
@@ -157,6 +159,7 @@ void MainWindow::loadPackages()
 
 
                         values->setText(dirIt.fileName() + " - " + version.remove(0,8) + ": "+ description.remove(0,16));
+
                         if (QFileInfo("/var/lib/scratchpkg/index/"+dirIt.fileName()+"/.pkginfo").exists())
                         {
                             values->setCheckState(Qt::Checked);
@@ -166,7 +169,15 @@ void MainWindow::loadPackages()
                           values->setCheckState(Qt::Unchecked);
                         }
 
-                        ui->listWidget->addItem(values);
+                        if(values->text().contains("- :"))
+                        {
+                        }
+                        else
+                        {
+
+                            ui->listWidget->addItem(values);
+                        }
+
                        //ui->listWidget->setItemWidget(values,new QCheckBox("zstd"));
                     }
                 }
@@ -225,7 +236,7 @@ void MainWindow::searchPackages(QString term)
                         QString description;
                         QString version;
 
-                        if (file.open(QIODevice::ReadOnly | QIODevice::Text) && (file.fileName().contains(term))){
+                        if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
                                 QTextStream stream(&file);
                                 while (!stream.atEnd()){
                                     line = stream.readLine();
@@ -253,8 +264,11 @@ void MainWindow::searchPackages(QString term)
                                 {
                                   values->setCheckState(Qt::Unchecked);
                                 }
+                                if(values->text().contains(term))
+                                {
 
-                                ui->listWidget->addItem(values);
+                                    ui->listWidget->addItem(values);
+                                }
                             }
 
 
