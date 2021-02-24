@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(setStdout()) );
     //connect(ui->woot, SIGNAL(returnPressed()), this, SLOT(command()) );
     loadPackages();
+    //ui->plainTextEdit->setGeometry(2000,0,280,40);
 
         }
 
@@ -53,6 +54,7 @@ void MainWindow::on_pushButton_clicked()
 void::MainWindow::setStdout()
 {
     ui->textEdit->append( m_process->readAllStandardOutput() );
+    //ui->plainTextEdit->appendPlainText(m_process->readAll());
 
 }
 void MainWindow::command(QString text)
@@ -74,11 +76,12 @@ void MainWindow::command(QString text)
 }
 void MainWindow::resizeEvent(QResizeEvent*)
 {
+//ui->plainTextEdit->setGeometry(MainWindow::width()-310,0,280,40);
+//ui->textEdit->resize(MainWindow::width()-30,MainWindow::height());
 
+//ui->textEdit->setGeometry(10,400,MainWindow::width(),MainWindow::height());
+//ui->listWidget->resize(MainWindow::width()-30,300);
 
-ui->plainTextEdit->setGeometry(MainWindow::width()-300,0,280,40);
-ui->textEdit->resize(MainWindow::width()-30,MainWindow::height()-30);
-ui->listWidget->resize(MainWindow::width()-30,300);
 }
 
 
