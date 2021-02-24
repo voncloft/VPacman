@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
@@ -39,7 +38,6 @@ public:
     QPushButton *pushButton_4;
     QGridLayout *gridLayout_6;
     QPlainTextEdit *plainTextEdit;
-    QLabel *label;
     QPushButton *pushButton_2;
     QGridLayout *gridLayout_4;
     QListWidget *listWidget;
@@ -72,6 +70,7 @@ public:
         gridLayout_5->setObjectName(QString::fromUtf8("gridLayout_5"));
         pushButton_3 = new QPushButton(centralwidget);
         pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+        pushButton_3->setFocusPolicy(Qt::NoFocus);
 
         gridLayout_5->addWidget(pushButton_3, 2, 2, 1, 1);
 
@@ -83,6 +82,7 @@ public:
         textEdit->setSizePolicy(sizePolicy1);
         textEdit->setSizeIncrement(QSize(0, 2));
         textEdit->setTabletTracking(true);
+        textEdit->setFocusPolicy(Qt::NoFocus);
         textEdit->setAutoFillBackground(true);
         textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         textEdit->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContentsOnFirstShow);
@@ -99,11 +99,13 @@ public:
 
         pushButton = new QPushButton(centralwidget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setFocusPolicy(Qt::NoFocus);
 
         gridLayout_5->addWidget(pushButton, 2, 0, 1, 1);
 
         pushButton_4 = new QPushButton(centralwidget);
         pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
+        pushButton_4->setFocusPolicy(Qt::NoFocus);
 
         gridLayout_5->addWidget(pushButton_4, 2, 3, 1, 1);
 
@@ -119,18 +121,14 @@ public:
         plainTextEdit->setLayoutDirection(Qt::LeftToRight);
         plainTextEdit->setOverwriteMode(false);
 
-        gridLayout_6->addWidget(plainTextEdit, 1, 1, 1, 1);
-
-        label = new QLabel(centralwidget);
-        label->setObjectName(QString::fromUtf8("label"));
-
-        gridLayout_6->addWidget(label, 1, 0, 1, 1, Qt::AlignRight);
+        gridLayout_6->addWidget(plainTextEdit, 1, 0, 1, 1, Qt::AlignRight);
 
 
         gridLayout_5->addLayout(gridLayout_6, 0, 0, 1, 4);
 
         pushButton_2 = new QPushButton(centralwidget);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+        pushButton_2->setFocusPolicy(Qt::NoFocus);
 
         gridLayout_5->addWidget(pushButton_2, 2, 1, 1, 1);
 
@@ -139,6 +137,7 @@ public:
         listWidget = new QListWidget(centralwidget);
         listWidget->setObjectName(QString::fromUtf8("listWidget"));
         listWidget->setSizeIncrement(QSize(2, 2));
+        listWidget->setFocusPolicy(Qt::NoFocus);
 
         gridLayout_4->addWidget(listWidget, 0, 0, 1, 1);
 
@@ -171,7 +170,7 @@ public:
         pushButton_3->setText(QCoreApplication::translate("MainWindow", "Update Packages", nullptr));
         pushButton->setText(QCoreApplication::translate("MainWindow", "Install", nullptr));
         pushButton_4->setText(QCoreApplication::translate("MainWindow", "Outdated Packages", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "Search", nullptr));
+        plainTextEdit->setPlaceholderText(QCoreApplication::translate("MainWindow", "Search", nullptr));
         pushButton_2->setText(QCoreApplication::translate("MainWindow", "Reload", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
     } // retranslateUi
