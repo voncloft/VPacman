@@ -121,8 +121,6 @@ DIST          = /usr/lib/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt5/mkspecs/modules/qt_KPeopleWidgets.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KPlotting.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KPty.pri \
-		/usr/lib/qt5/mkspecs/modules/qt_KrossCore.pri \
-		/usr/lib/qt5/mkspecs/modules/qt_KrossUi.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KRunner.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KScreen.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KService.pri \
@@ -303,6 +301,10 @@ DIST          = /usr/lib/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkit.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkit_private.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_websockets.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_websockets_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webview.pri \
@@ -317,6 +319,7 @@ DIST          = /usr/lib/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_xml_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_phonon4qt5.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_Prison.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_QuickAddons.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_Solid.pri \
@@ -426,8 +429,6 @@ Makefile: untitled1.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5/m
 		/usr/lib/qt5/mkspecs/modules/qt_KPeopleWidgets.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KPlotting.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KPty.pri \
-		/usr/lib/qt5/mkspecs/modules/qt_KrossCore.pri \
-		/usr/lib/qt5/mkspecs/modules/qt_KrossUi.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KRunner.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KScreen.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_KService.pri \
@@ -608,6 +609,10 @@ Makefile: untitled1.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5/m
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkit.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkit_private.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_websockets.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_websockets_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_webview.pri \
@@ -622,6 +627,7 @@ Makefile: untitled1.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5/m
 		/usr/lib/qt5/mkspecs/modules/qt_lib_xml_private.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri \
+		/usr/lib/qt5/mkspecs/modules/qt_phonon4qt5.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_Prison.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_QuickAddons.pri \
 		/usr/lib/qt5/mkspecs/modules/qt_Solid.pri \
@@ -720,8 +726,6 @@ Makefile: untitled1.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5/m
 /usr/lib/qt5/mkspecs/modules/qt_KPeopleWidgets.pri:
 /usr/lib/qt5/mkspecs/modules/qt_KPlotting.pri:
 /usr/lib/qt5/mkspecs/modules/qt_KPty.pri:
-/usr/lib/qt5/mkspecs/modules/qt_KrossCore.pri:
-/usr/lib/qt5/mkspecs/modules/qt_KrossUi.pri:
 /usr/lib/qt5/mkspecs/modules/qt_KRunner.pri:
 /usr/lib/qt5/mkspecs/modules/qt_KScreen.pri:
 /usr/lib/qt5/mkspecs/modules/qt_KService.pri:
@@ -902,6 +906,10 @@ Makefile: untitled1.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5/m
 /usr/lib/qt5/mkspecs/modules/qt_lib_webenginecoreheaders_private.pri:
 /usr/lib/qt5/mkspecs/modules/qt_lib_webenginewidgets.pri:
 /usr/lib/qt5/mkspecs/modules/qt_lib_webenginewidgets_private.pri:
+/usr/lib/qt5/mkspecs/modules/qt_lib_webkit.pri:
+/usr/lib/qt5/mkspecs/modules/qt_lib_webkit_private.pri:
+/usr/lib/qt5/mkspecs/modules/qt_lib_webkitwidgets.pri:
+/usr/lib/qt5/mkspecs/modules/qt_lib_webkitwidgets_private.pri:
 /usr/lib/qt5/mkspecs/modules/qt_lib_websockets.pri:
 /usr/lib/qt5/mkspecs/modules/qt_lib_websockets_private.pri:
 /usr/lib/qt5/mkspecs/modules/qt_lib_webview.pri:
@@ -916,6 +924,7 @@ Makefile: untitled1.pro /usr/lib/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/qt5/m
 /usr/lib/qt5/mkspecs/modules/qt_lib_xml_private.pri:
 /usr/lib/qt5/mkspecs/modules/qt_lib_xmlpatterns.pri:
 /usr/lib/qt5/mkspecs/modules/qt_lib_xmlpatterns_private.pri:
+/usr/lib/qt5/mkspecs/modules/qt_phonon4qt5.pri:
 /usr/lib/qt5/mkspecs/modules/qt_Prison.pri:
 /usr/lib/qt5/mkspecs/modules/qt_QuickAddons.pri:
 /usr/lib/qt5/mkspecs/modules/qt_Solid.pri:

@@ -31,6 +31,9 @@
   <property name="windowTitle">
    <string>Voncloft Package Manager</string>
   </property>
+  <property name="windowIcon">
+   <iconset theme="yast-update-online-configuration"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -39,17 +42,24 @@
     </sizepolicy>
    </property>
    <layout class="QGridLayout" name="gridLayout_5">
-    <item row="2" column="2">
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Update Packages</string>
-      </property>
-     </widget>
+    <item row="1" column="0" colspan="4">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QListWidget" name="listWidget">
+        <property name="sizeIncrement">
+         <size>
+          <width>2</width>
+          <height>2</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="3" column="0" colspan="4">
+    <item row="5" column="0" colspan="4">
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
        <widget class="QTextEdit" name="textEdit">
@@ -97,27 +107,14 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Packages Installed: </string>
+        </property>
+       </widget>
+      </item>
      </layout>
-    </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Install</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3">
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string>Outdated Packages</string>
-      </property>
-     </widget>
     </item>
     <item row="0" column="0" colspan="4">
      <layout class="QGridLayout" name="gridLayout_6">
@@ -167,22 +164,35 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="4">
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QListWidget" name="listWidget">
-        <property name="sizeIncrement">
-         <size>
-          <width>2</width>
-          <height>2</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <item row="2" column="2">
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Update Packages</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Outdated Packages</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="pushButton">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string>Install</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -89,7 +89,7 @@ void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox msgbox;
     msgbox.setWindowTitle("VPacman");
-    msgbox.setText("Voncloft Package Manager - Version 2.2 - A front end gui for scratchpkg");
+    msgbox.setText("Voncloft Package Manager - Version 2.3 - A front end gui for scratchpkg");
     msgbox.exec();
 }
 
@@ -100,6 +100,7 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::loadPackages()
 {
     QDirIterator dirIt("/usr/Voncloft-OS",QDirIterator::Subdirectories);
+    int installed=0;
 
     QDirIterator dirIts("/var/lib/scratchpkg",QDirIterator::Subdirectories);
     QMessageBox msgbox;
@@ -157,12 +158,21 @@ void MainWindow::loadPackages()
                             file.close();
 
 
+                        //dirIt.filePath();
+                        QString category;
 
-                        values->setText(dirIt.fileName() + " - " + version.remove(0,8) + ": "+ description.remove(0,16));
+                        category=dirIt.filePath().remove("/usr/Voncloft-OS/");
+                        int str;
+                        str=category.indexOf('/');
+                        int length=category.length();
+                        QString final_category;
+                        final_category=category.remove(str,length);
+                        values->setText("[" + category + "] " + dirIt.fileName() + " - " + version.remove(0,8) + ": "+ description.remove(0,16));
 
-                        if (QFileInfo("/var/lib/scratchpkg/index/"+dirIt.fileName()+"/.pkginfo").exists())
+                        if (QFileInfo("/var/lib/scratchpkg/db/"+dirIt.fileName()).exists())
                         {
                             values->setCheckState(Qt::Checked);
+                            installed+=1;
                         }
                         else
                         {
@@ -183,7 +193,9 @@ void MainWindow::loadPackages()
                 }
             }
         ui->listWidget->sortItems(Qt::AscendingOrder);
-
+        QString installed_string="Packages installed: " + QString::number(installed);
+        //installed_string
+        ui->label->setText(installed_string);
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -207,6 +219,7 @@ void MainWindow::searchPackages(QString term)
     QDirIterator dirIts("/var/lib/scratchpkg",QDirIterator::Subdirectories);
     QMessageBox msgbox;
     ui->listWidget->clear();
+    int installed=0;
     //msgbox.setText(dirIt.fileName());
     //msgbox.exec();
         while (dirIt.hasNext())
@@ -255,10 +268,23 @@ void MainWindow::searchPackages(QString term)
 
 
                                 }
-                                values->setText(dirIt.fileName() + " - " + version.remove(0,8) + ": "+ description.remove(0,16));
-                                if (QFileInfo("/var/lib/scratchpkg/index/"+dirIt.fileName()+"/.pkginfo").exists())
+
+                                QString category;
+
+                                category=dirIt.filePath().remove("/usr/Voncloft-OS/");
+                                int str;
+                                str=category.indexOf('/');
+                                int length=category.length();
+                                QString final_category;
+                                final_category=category.remove(str,length);
+                                values->setText("[" + category + "] " + dirIt.fileName() + " - " + version.remove(0,8) + ": "+ description.remove(0,16));
+
+
+                                //values->setText(dirIt.fileName() + " - " + version.remove(0,8) + ": "+ description.remove(0,16));
+                                if (QFileInfo("/var/lib/scratchpkg/db/"+dirIt.fileName()).exists())
                                 {
                                     values->setCheckState(Qt::Checked);
+                                    installed+=1;
                                 }
                                 else
                                 {
@@ -284,5 +310,7 @@ void MainWindow::searchPackages(QString term)
                 }
             }
         ui->listWidget->sortItems(Qt::AscendingOrder);
-
+        QString installed_string="Packages installed: " + QString::number(installed);
+        //installed_string
+        //ui->label->setText(installed_string);
 }
