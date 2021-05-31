@@ -35,15 +35,16 @@ public:
     QGridLayout *gridLayout_5;
     QGridLayout *gridLayout_4;
     QListWidget *listWidget;
+    QPushButton *pushButton_3;
+    QPushButton *pushButton_2;
+    QPushButton *pushButton;
+    QPushButton *pushButton_4;
     QGridLayout *gridLayout_3;
     QTextEdit *textEdit;
     QLabel *label;
     QGridLayout *gridLayout_6;
     QPlainTextEdit *plainTextEdit;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton_3;
-    QPushButton *pushButton_4;
-    QPushButton *pushButton;
+    QPushButton *pushButton_5;
     QMenuBar *menubar;
     QMenu *menuFile;
     QStatusBar *statusbar;
@@ -60,7 +61,13 @@ public:
         MainWindow->setSizePolicy(sizePolicy);
         MainWindow->setMinimumSize(QSize(1126, 641));
         MainWindow->setMaximumSize(QSize(16777215, 16777215));
-        QIcon icon(QIcon::fromTheme(QString::fromUtf8("yast-update-online-configuration")));
+        QIcon icon;
+        QString iconThemeName = QString::fromUtf8("yast-update-online-configuration");
+        if (QIcon::hasThemeIcon(iconThemeName)) {
+            icon = QIcon::fromTheme(iconThemeName);
+        } else {
+            icon.addFile(QString::fromUtf8("."), QSize(), QIcon::Normal, QIcon::Off);
+        }
         MainWindow->setWindowIcon(icon);
         actionAbout = new QAction(MainWindow);
         actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
@@ -83,7 +90,31 @@ public:
         gridLayout_4->addWidget(listWidget, 0, 0, 1, 1);
 
 
-        gridLayout_5->addLayout(gridLayout_4, 1, 0, 1, 4);
+        gridLayout_5->addLayout(gridLayout_4, 1, 0, 1, 5);
+
+        pushButton_3 = new QPushButton(centralwidget);
+        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
+        pushButton_3->setFocusPolicy(Qt::NoFocus);
+
+        gridLayout_5->addWidget(pushButton_3, 2, 3, 1, 1);
+
+        pushButton_2 = new QPushButton(centralwidget);
+        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+        pushButton_2->setFocusPolicy(Qt::NoFocus);
+
+        gridLayout_5->addWidget(pushButton_2, 2, 2, 1, 1);
+
+        pushButton = new QPushButton(centralwidget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setFocusPolicy(Qt::NoFocus);
+
+        gridLayout_5->addWidget(pushButton, 2, 0, 1, 1);
+
+        pushButton_4 = new QPushButton(centralwidget);
+        pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
+        pushButton_4->setFocusPolicy(Qt::NoFocus);
+
+        gridLayout_5->addWidget(pushButton_4, 2, 4, 1, 1);
 
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
@@ -111,7 +142,7 @@ public:
         gridLayout_3->addWidget(label, 1, 0, 1, 1);
 
 
-        gridLayout_5->addLayout(gridLayout_3, 5, 0, 1, 4);
+        gridLayout_5->addLayout(gridLayout_3, 5, 0, 1, 5);
 
         gridLayout_6 = new QGridLayout();
         gridLayout_6->setObjectName(QString::fromUtf8("gridLayout_6"));
@@ -128,31 +159,12 @@ public:
         gridLayout_6->addWidget(plainTextEdit, 1, 0, 1, 1, Qt::AlignRight);
 
 
-        gridLayout_5->addLayout(gridLayout_6, 0, 0, 1, 4);
+        gridLayout_5->addLayout(gridLayout_6, 0, 0, 1, 5);
 
-        pushButton_2 = new QPushButton(centralwidget);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setFocusPolicy(Qt::NoFocus);
+        pushButton_5 = new QPushButton(centralwidget);
+        pushButton_5->setObjectName(QString::fromUtf8("pushButton_5"));
 
-        gridLayout_5->addWidget(pushButton_2, 2, 1, 1, 1);
-
-        pushButton_3 = new QPushButton(centralwidget);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setFocusPolicy(Qt::NoFocus);
-
-        gridLayout_5->addWidget(pushButton_3, 2, 2, 1, 1);
-
-        pushButton_4 = new QPushButton(centralwidget);
-        pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
-        pushButton_4->setFocusPolicy(Qt::NoFocus);
-
-        gridLayout_5->addWidget(pushButton_4, 2, 3, 1, 1);
-
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setFocusPolicy(Qt::NoFocus);
-
-        gridLayout_5->addWidget(pushButton, 2, 0, 1, 1);
+        gridLayout_5->addWidget(pushButton_5, 2, 1, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -177,12 +189,13 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Voncloft Package Manager", nullptr));
         actionAbout->setText(QCoreApplication::translate("MainWindow", "About", nullptr));
+        pushButton_3->setText(QCoreApplication::translate("MainWindow", "Update Packages", nullptr));
+        pushButton_2->setText(QCoreApplication::translate("MainWindow", "Reload", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainWindow", "Install", nullptr));
+        pushButton_4->setText(QCoreApplication::translate("MainWindow", "Outdated Packages", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "Packages Installed: ", nullptr));
         plainTextEdit->setPlaceholderText(QCoreApplication::translate("MainWindow", "Search", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("MainWindow", "Reload", nullptr));
-        pushButton_3->setText(QCoreApplication::translate("MainWindow", "Update Packages", nullptr));
-        pushButton_4->setText(QCoreApplication::translate("MainWindow", "Outdated Packages", nullptr));
-        pushButton->setText(QCoreApplication::translate("MainWindow", "Install", nullptr));
+        pushButton_5->setText(QCoreApplication::translate("MainWindow", "Update", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
     } // retranslateUi
 

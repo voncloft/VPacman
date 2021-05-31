@@ -1,3 +1,7 @@
+//todo: have checkversion loop thru files
+//find way to convert the version strings to integers and do the <>=
+//give upgrade options in the list
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "QString"
@@ -212,6 +216,7 @@ void MainWindow::on_plainTextEdit_textChanged()
 {
     searchPackages(ui->plainTextEdit->toPlainText());
 }
+//QString version1;
 void MainWindow::searchPackages(QString term)
 {
     QDirIterator dirIt("/usr/Voncloft-OS",QDirIterator::Subdirectories);
@@ -313,4 +318,45 @@ void MainWindow::searchPackages(QString term)
         QString installed_string="Packages installed: " + QString::number(installed);
         //installed_string
         //ui->label->setText(installed_string);
+}
+void versioncheck(QString filecheck1,QString filecheck2)
+{
+    QMessageBox msgbox;
+    QFile file(filecheck2);
+    QFile file2(filecheck1);
+    if(!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::information(0, "error", file.errorString());
+    }
+    if(!file2.open(QIODevice::ReadOnly)) {
+        QMessageBox::information(0, "error", file.errorString());
+    }
+    QTextStream in(&file);
+    QTextStream in2(&file2);
+    QString line2=in.readLine();
+    QString final;
+    QString version;
+    QString release;
+    while(!in2.atEnd()) {
+        QString line = in2.readLine();
+            if (line.contains("version="))
+            {
+                version=line.remove("version=");
+            }
+            else if (line.contains("release="))
+            {
+                release=line.remove("release=");
+            }
+        }
+        final=version+" "+release;
+        if (final==line2)
+        {
+               msgbox.setText("same");
+               msgbox.exec();
+        }
+    file.close();
+    file2.close();
+}
+void MainWindow::on_pushButton_5_clicked()
+{
+    versioncheck("/usr/Voncloft-OS/core/nano/spkgbuild","/var/lib/scratchpkg/db/nano");
 }
