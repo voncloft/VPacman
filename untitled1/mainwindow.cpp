@@ -33,14 +33,14 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     if(item->checkState()==Qt::Checked)
     {
         QString package;
-        package=item->text().section(' ',0,0);
+        package=item->text().section(' ',0,1);
 
         test+=package+" ";
     }
     else
     {
         QString package;
-        package=item->text().section(' ',0,0);
+        package=item->text().section(' ',0,1);
 
         test.remove(package);
     }
@@ -52,7 +52,7 @@ void MainWindow::on_pushButton_clicked()
     //command ("echo test");
     QMessageBox msgbox;
     msgbox.setText("sudo /usr/bin/scratch install -yc " + test);
-    //msgbox.exec();
+   // msgbox.exec();
 }
 
 void::MainWindow::setStdout()
