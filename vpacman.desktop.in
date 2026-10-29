@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=VPacman
+Comment=Browse, install, and upgrade Scratchpkg packages
+Exec=@CMAKE_INSTALL_FULL_BINDIR@/VPacman
+TryExec=@CMAKE_INSTALL_FULL_BINDIR@/VPacman
+Icon=vpacman
+Terminal=false
+Categories=System;PackageManager;
+StartupNotify=true
+StartupWMClass=vpacman

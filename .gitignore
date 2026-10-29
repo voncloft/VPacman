@@ -1,0 +1,11 @@
+/build*/
+*.user
+*.user.*
+*.o
+moc_*.cpp
+moc_predefs.h
+ui_*.h
+.qmake.stash
+/untitled1/Makefile
+/untitled1/build/
+/untitled1/untitled1

@@ -33,7 +33,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr,
+                        const QString &repoFile = QStringLiteral("/etc/scratchpkg.repo"));
     ~MainWindow();
 
 private slots:
@@ -44,7 +45,6 @@ private slots:
     //void on_listWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void setStdout();
     void command(QString text);
-    void fileRead(QString path);
 
     void on_actionAbout_triggered();
 
@@ -60,6 +60,7 @@ private slots:
     void on_pushButton_5_clicked();
 
 private:
+    QString repositoryConfig;
     Ui::MainWindow *ui;
     QProcess *m_process;
     void resizeEvent(QResizeEvent*);
