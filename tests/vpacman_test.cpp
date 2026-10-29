@@ -4,9 +4,25 @@
 #include <QTextEdit>
 #include <QTemporaryDir>
 #include <QLabel>
-extern QString test;
 class VpacmanTest : public QObject {
     Q_OBJECT
+    static void writeFile(const QString &path, const QByteArray &contents) {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        QCOMPARE(file.write(contents), contents.size());
+    }
+    static void addRecipe(const QTemporaryDir &tmp, const QString &name, const QString &depends = {}) {
+        QVERIFY(QDir().mkpath(tmp.filePath("repo/" + name)));
+        // The resolver must read comments, never execute the recipe.
+        writeFile(tmp.filePath("repo/" + name + "/spkgbuild"),
+                  ("# description : Preview fixture\n# depends : " + depends
+                   + "\nname=" + name + "\nversion=1\nexit 99\n").toUtf8());
+    }
+    static QListWidgetItem *packageItem(QListWidget *list, const QString &name) {
+        for (int i = 0; i < list->count(); ++i)
+            if (list->item(i)->data(Qt::UserRole).toString() == name) return list->item(i);
+        return nullptr;
+    }
 private slots:
     void bundledIconRendersWithoutTheme() {
         const QIcon icon(":/icons/vpacman.svg");
@@ -98,19 +114,102 @@ private slots:
         QCOMPARE(list->count(), expected);
         qInfo() << "Extra recipes visible:" << list->count();
     }
-    void selectedNamesAreExact() {
-        MainWindow w;
-        auto *list=w.findChild<QListWidget *>("listWidget");
-        QListWidgetItem foo("[extra] foo - 1: First"), foobar("[extra] foobar - 2: Second");
-        foo.setData(Qt::UserRole,"foo"); foobar.setData(Qt::UserRole,"foobar");
-        test.clear();
-        foo.setCheckState(Qt::Checked); list->itemClicked(&foo);
-        foobar.setCheckState(Qt::Checked); list->itemClicked(&foobar);
-        QCOMPARE(test,QString("foo foobar"));
-        foo.setCheckState(Qt::Unchecked); list->itemClicked(&foo);
-        QCOMPARE(test,QString("foobar"));
-        QVERIFY(!test.contains("[extra]"));
-        test.clear();
+    void previewTracksSelectionsAndPendingDependencies() {
+        QTemporaryDir tmp;
+        QVERIFY(tmp.isValid());
+        QVERIFY(QFileInfo("/var/lib/scratchpkg/db/python-pip").size() > 0);
+        addRecipe(tmp, "vp-test-foo", "vp-test-middle python-pip");
+        addRecipe(tmp, "vp-test-foobar", "vp-test-shared");
+        addRecipe(tmp, "vp-test-middle", "vp-test-shared");
+        addRecipe(tmp, "vp-test-shared");
+        addRecipe(tmp, "python-pip");
+        const auto config = tmp.filePath("scratchpkg.repo");
+        writeFile(config, (tmp.filePath("repo") + " https://example.invalid/repo\n").toUtf8());
+        MainWindow window(nullptr, config);
+        auto *list = window.findChild<QListWidget *>("listWidget");
+        auto *label = window.findChild<QLabel *>("installPreviewLabel");
+        auto *search = window.findChild<QPlainTextEdit *>("plainTextEdit");
+        auto *process = window.findChild<QProcess *>("dependencyPreviewProcess");
+        QCOMPARE(packageItem(list, "python-pip")->checkState(), Qt::Checked);
+        QCOMPARE(label->text(), QString("Selected: none\nDependencies to install: none"));
+        QCOMPARE(process->state(), QProcess::NotRunning);
+
+        window.show();
+        auto *foo = packageItem(list, "vp-test-foo");
+        const QRect rect = list->visualItemRect(foo);
+        QTest::mouseClick(list->viewport(), Qt::LeftButton, Qt::NoModifier,
+                          QPoint(rect.left() + 8, rect.center().y()));
+        QCOMPARE(foo->checkState(), Qt::Checked);
+        packageItem(list, "vp-test-foobar")->setCheckState(Qt::Checked);
+        QTRY_COMPARE(label->text(), QString("Selected: vp-test-foo, vp-test-foobar\nDependencies to install: vp-test-shared, vp-test-middle"));
+        QCOMPARE(process->program(), QString("/usr/bin/scratch"));
+        QCOMPARE(process->arguments(), QStringList({"deplist", "-q", "--nocolor", "--repo-file=" + config,
+                                                    "vp-test-foo", "vp-test-foobar"}));
+        const auto expected = label->text();
+        search->setPlainText("__hidden__");
+        QCOMPARE(list->count(), 0);
+        QTRY_COMPARE(label->text(), expected);
+        search->clear();
+        packageItem(list, "vp-test-foo")->setCheckState(Qt::Unchecked);
+        QTRY_COMPARE(label->text(), QString("Selected: vp-test-foobar\nDependencies to install: vp-test-shared"));
+        packageItem(list, "vp-test-foobar")->setCheckState(Qt::Unchecked);
+        QCOMPARE(label->text(), QString("Selected: none\nDependencies to install: none"));
+        QTest::qWait(200);
+        QCOMPARE(process->state(), QProcess::NotRunning);
+        QVERIFY(window.findChild<QTextEdit *>("textEdit")->toPlainText().isEmpty());
+    }
+    void previewDiscardsStaleResultsAndReportsFailure() {
+        QTemporaryDir tmp;
+        QVERIFY(tmp.isValid());
+        addRecipe(tmp, "vp-test-first");
+        addRecipe(tmp, "vp-test-second");
+        const auto config = tmp.filePath("scratchpkg.repo");
+        writeFile(config, (tmp.filePath("repo") + "\n").toUtf8());
+        const auto resolver = tmp.filePath("resolver");
+        writeFile(resolver, "#!/bin/sh\nfor arg do target=$arg; done\nsleep 0.3\nprintf '%s\\n' \"dep-$target\" \"$target\"\n");
+        QVERIFY(QFile::setPermissions(resolver, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner));
+        MainWindow window(nullptr, config, resolver);
+        auto *list = window.findChild<QListWidget *>("listWidget");
+        auto *label = window.findChild<QLabel *>("installPreviewLabel");
+        auto *process = window.findChild<QProcess *>("dependencyPreviewProcess");
+        packageItem(list, "vp-test-first")->setCheckState(Qt::Checked);
+        QTRY_COMPARE(process->state(), QProcess::Running);
+        packageItem(list, "vp-test-first")->setCheckState(Qt::Unchecked);
+        packageItem(list, "vp-test-second")->setCheckState(Qt::Checked);
+        QTRY_COMPARE(label->text(), QString("Selected: vp-test-second\nDependencies to install: dep-vp-test-second"));
+        packageItem(list, "vp-test-second")->setCheckState(Qt::Unchecked);
+        packageItem(list, "vp-test-first")->setCheckState(Qt::Checked);
+        QTRY_COMPARE(process->state(), QProcess::Running);
+        packageItem(list, "vp-test-first")->setCheckState(Qt::Unchecked);
+        QTRY_COMPARE(process->state(), QProcess::NotRunning);
+        QCOMPARE(label->text(), QString("Selected: none\nDependencies to install: none"));
+
+        writeFile(resolver, "#!/bin/sh\necho 'resolver failed' >&2\nexit 1\n");
+        packageItem(list, "vp-test-first")->setCheckState(Qt::Checked);
+        QTRY_VERIFY(label->text().contains("unavailable (resolver failed)"));
+        packageItem(list, "vp-test-first")->setCheckState(Qt::Unchecked);
+        QVERIFY(QFile::remove(resolver));
+        packageItem(list, "vp-test-first")->setCheckState(Qt::Checked);
+        QTRY_VERIFY(label->text().contains("unavailable ("));
+    }
+    void liveAnkiPreview() {
+        MainWindow window;
+        window.findChild<QPlainTextEdit *>("plainTextEdit")->setPlainText("anki");
+        auto *item = packageItem(window.findChild<QListWidget *>("listWidget"), "anki");
+        QVERIFY(item);
+        if (QFileInfo("/var/lib/scratchpkg/db/anki").size() > 0) QSKIP("Anki already installed");
+        item->setCheckState(Qt::Checked);
+        auto *label = window.findChild<QLabel *>("installPreviewLabel");
+        QTRY_VERIFY_WITH_TIMEOUT(!label->text().contains("resolving"), 30000);
+        QVERIFY(!label->text().contains("unavailable"));
+        QVERIFY(label->text().startsWith("Selected: anki\nDependencies to install: "));
+        window.show();
+        QTest::qWait(100);
+        auto *output = window.findChild<QTextEdit *>("textEdit");
+        QVERIFY(label->mapTo(&window, QPoint()).y() >= output->mapTo(&window, QPoint()).y() + output->height());
+        qInfo().noquote() << label->text();
+        const QString screenshot = qEnvironmentVariable("VPACMAN_PREVIEW_SCREENSHOT");
+        if (!screenshot.isEmpty()) QVERIFY(window.grab().save(screenshot));
     }
 };
 QTEST_MAIN(VpacmanTest)

@@ -9,6 +9,7 @@
 #include <QModelIndexList>
 #include <QListWidgetItem>
 #include <QProcess>
+#include <QTimer>
 
 
 #include <QStringList>
@@ -34,11 +35,12 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr,
-                        const QString &repoFile = QStringLiteral("/etc/scratchpkg.repo"));
+                        const QString &repoFile = QStringLiteral("/etc/scratchpkg.repo"),
+                        const QString &scratchProgram = QStringLiteral("/usr/bin/scratch"));
     ~MainWindow();
 
 private slots:
-    void on_listWidget_itemClicked(QListWidgetItem *item);
+    void on_listWidget_itemChanged(QListWidgetItem *item);
 
     void on_pushButton_clicked();
 
@@ -61,6 +63,17 @@ private slots:
 
 private:
     QString repositoryConfig;
+    QString dependencyCommand;
+    QStringList selectedPackages;
+    QStringList previewTargets;
+    QString previewHeading;
+    quint64 previewRevision = 0;
+    quint64 runningPreviewRevision = 0;
+    QProcess *previewProcess;
+    QTimer *previewTimer;
+    void updateInstallPreview();
+    void startInstallPreview();
+    void finishInstallPreview(int exitCode, QProcess::ExitStatus status);
     Ui::MainWindow *ui;
     QProcess *m_process;
     void resizeEvent(QResizeEvent*);

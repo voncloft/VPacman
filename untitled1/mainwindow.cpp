@@ -9,10 +9,12 @@
 #include <QIcon>
 #include <QRegularExpression>
 #include <QScrollBar>
+#include <QSignalBlocker>
 QString woot = "ping www.google.com";
-MainWindow::MainWindow(QWidget *parent, const QString &repoFile)
+MainWindow::MainWindow(QWidget *parent, const QString &repoFile, const QString &scratchProgram)
     : QMainWindow(parent)
     , repositoryConfig(repoFile)
+    , dependencyCommand(scratchProgram)
     , ui(new Ui::MainWindow)
 {
 
@@ -21,6 +23,22 @@ MainWindow::MainWindow(QWidget *parent, const QString &repoFile)
 
     ui->plainTextEdit->setPlaceholderText("Search packages");
     ui->textEdit->setReadOnly(true);
+    previewProcess = new QProcess(this);
+    previewProcess->setObjectName("dependencyPreviewProcess");
+    previewTimer = new QTimer(this);
+    previewTimer->setSingleShot(true);
+    previewTimer->setInterval(100);
+    connect(previewTimer, &QTimer::timeout, this, &MainWindow::startInstallPreview);
+    connect(previewProcess, &QProcess::finished, this, &MainWindow::finishInstallPreview);
+    connect(previewProcess, &QProcess::errorOccurred, this, [this](QProcess::ProcessError error) {
+        if (error != QProcess::FailedToStart) return;
+        if (runningPreviewRevision != previewRevision) {
+            startInstallPreview();
+            return;
+        }
+        ui->installPreviewLabel->setText(previewHeading + "\nDependencies to install: unavailable ("
+                                         + previewProcess->errorString() + ")");
+    });
     m_process = new QProcess(this);
     m_process->setProcessChannelMode(QProcess::MergedChannels);
     connect(m_process, &QProcess::errorOccurred, this, [this](QProcess::ProcessError) {
@@ -40,27 +58,89 @@ MainWindow::MainWindow(QWidget *parent, const QString &repoFile)
 
 MainWindow::~MainWindow()
 {
+    disconnect(previewProcess, nullptr, this, nullptr);
+    if (previewProcess->state() != QProcess::NotRunning) {
+        previewProcess->kill();
+        previewProcess->waitForFinished(1000);
+    }
     delete ui;
 }
 
-QString test;
-void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
+void MainWindow::on_listWidget_itemChanged(QListWidgetItem *item)
 {
     const QString package = item->data(Qt::UserRole).toString();
     if (package.isEmpty()) return;
-    QStringList selected = test.split(' ', Qt::SkipEmptyParts);
     if (item->checkState() == Qt::Checked) {
-        if (!selected.contains(package)) selected.append(package);
-    } else selected.removeAll(package);
-    test = selected.join(' ');
+        if (!selectedPackages.contains(package)) selectedPackages.append(package);
+    } else selectedPackages.removeAll(package);
+    updateInstallPreview();
+}
+
+void MainWindow::updateInstallPreview()
+{
+    ++previewRevision;
+    previewTimer->stop();
+    previewTargets.clear();
+    QStringList selected;
+    for (const auto &package : selectedPackages) {
+        const QFileInfo installed("/var/lib/scratchpkg/db/" + package);
+        if (installed.isFile() && installed.size() > 0) {
+            selected.append(package + " (already installed)");
+        } else {
+            selected.append(package);
+            previewTargets.append(package);
+        }
+    }
+    previewHeading = "Selected: " + (selected.isEmpty() ? QString("none") : selected.join(", "));
+    ui->installPreviewLabel->setText(previewHeading + "\nDependencies to install: "
+                                     + (previewTargets.isEmpty() ? "none" : "resolving…"));
+    if (!previewTargets.isEmpty()) previewTimer->start();
+}
+
+void MainWindow::startInstallPreview()
+{
+    if (previewTargets.isEmpty() || previewProcess->state() != QProcess::NotRunning) return;
+    runningPreviewRevision = previewRevision;
+    // Use Scratch's own read-only resolver, including aliases and installed-package filtering.
+    QStringList arguments = {"deplist", "-q", "--nocolor", "--repo-file=" + repositoryConfig};
+    arguments.append(previewTargets);
+    previewProcess->start(dependencyCommand, arguments);
+}
+
+void MainWindow::finishInstallPreview(int exitCode, QProcess::ExitStatus status)
+{
+    const QString output = QString::fromLocal8Bit(previewProcess->readAllStandardOutput());
+    const QString errors = QString::fromLocal8Bit(previewProcess->readAllStandardError()).trimmed();
+    // Rapid checkbox changes must never display a result for an older selection.
+    if (runningPreviewRevision != previewRevision) {
+        startInstallPreview();
+        return;
+    }
+    if (status != QProcess::NormalExit || exitCode != 0) {
+        ui->installPreviewLabel->setText(previewHeading + "\nDependencies to install: unavailable"
+                                         + (errors.isEmpty() ? QString(" (Scratch failed)") : " (" + errors + ")"));
+        return;
+    }
+    QStringList packages = output.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+    packages.removeDuplicates();
+    for (const auto &target : previewTargets) {
+        if (!packages.contains(target)) {
+            ui->installPreviewLabel->setText(previewHeading + "\nDependencies to install: unavailable (package not found: "
+                                             + target + ")");
+            return;
+        }
+    }
+    for (const auto &package : selectedPackages) packages.removeAll(package);
+    ui->installPreviewLabel->setText(previewHeading + "\nDependencies to install: "
+                                     + (packages.isEmpty() ? QString("none") : packages.join(", ")));
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    command("sudo -n /usr/bin/scratch install -yc " + test);
+    command("sudo -n /usr/bin/scratch install -yc " + selectedPackages.join(' '));
     //command ("echo test");
     QMessageBox msgbox;
-    msgbox.setText("sudo -n /usr/bin/scratch install -yc " + test);
+    msgbox.setText("sudo -n /usr/bin/scratch install -yc " + selectedPackages.join(' '));
    // msgbox.exec();
 }
 
@@ -77,7 +157,7 @@ void MainWindow::command(QString text)
         ui->textEdit->insertPlainText("\nA package command is already running.\n");
         return;
     }
-    if ((text.contains("scratch install ") || text.contains("scratch upgrade ")) && test.isEmpty()) {
+    if ((text.contains("scratch install ") || text.contains("scratch upgrade ")) && selectedPackages.isEmpty()) {
         ui->textEdit->insertPlainText("Select a package first.\n");
         return;
     }
@@ -87,13 +167,14 @@ void MainWindow::command(QString text)
         strCommand = "cmd /C ";
 
     //strCommand = "y | sudo -n /usr/bin/scratch install -y " + test;
-    strCommand=test;
+    strCommand=selectedPackages.join(' ');
 
     QMessageBox msgbox;
     msgbox.setText(text);
     //msgbox.exec();
     m_process->startCommand(text);
-    test.clear();
+    selectedPackages.clear();
+    updateInstallPreview();
 
 }
 void MainWindow::resizeEvent(QResizeEvent*)
@@ -143,12 +224,13 @@ void MainWindow::searchPackages(QString term)
 {
     const QString query = term.trimmed();
     const QRegularExpression descriptionLine("^#\\s*description\\s*:\\s*(.*)$");
-    const QStringList selected = test.split(' ', Qt::SkipEmptyParts);
+    const QSignalBlocker blocker(ui->listWidget);
     ui->listWidget->clear();
 
     QFile config(repositoryConfig);
     if (!config.open(QIODevice::ReadOnly | QIODevice::Text)) {
         ui->label->setText("Cannot read repositories: " + repositoryConfig);
+        updateInstallPreview();
         return;
     }
     QStringList repositories;
@@ -186,7 +268,7 @@ void MainWindow::searchPackages(QString term)
             auto *item = new QListWidgetItem(display, ui->listWidget);
             item->setData(Qt::UserRole, name);
             const bool isInstalled = QFileInfo::exists("/var/lib/scratchpkg/db/" + name);
-            item->setCheckState(isInstalled || selected.contains(name) ? Qt::Checked : Qt::Unchecked);
+            item->setCheckState(isInstalled || selectedPackages.contains(name) ? Qt::Checked : Qt::Unchecked);
             if (isInstalled) ++installed;
         }
     }
@@ -196,9 +278,10 @@ void MainWindow::searchPackages(QString term)
     if (!unavailable.isEmpty()) summary += " | Unavailable: " + unavailable.join(", ");
     ui->label->setText(summary);
     ui->label->setWordWrap(true);
+    updateInstallPreview();
 }
 
 void MainWindow::on_pushButton_5_clicked()
 {
-    command("sudo -n /usr/bin/scratch upgrade -yc " + test);
+    command("sudo -n /usr/bin/scratch upgrade -yc " + selectedPackages.join(' '));
 }

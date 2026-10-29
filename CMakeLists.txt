@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(VPacman VERSION 4.3.3 LANGUAGES CXX)
+project(VPacman VERSION 4.3.4 LANGUAGES CXX)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX /usr CACHE PATH "Install prefix" FORCE)

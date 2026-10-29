@@ -4,6 +4,11 @@ Qt 6 graphical interface for Scratchpkg. Browse and search packages from the ena
 `/etc/scratchpkg.repo`, install selected packages, upgrade selections or
 the system, and view outdated packages and command output.
 
+The label below the output box shows your selected packages and the dependencies
+Scratchpkg would install. It updates when you check or uncheck a package. Already
+installed dependencies are omitted; shared dependencies appear once. Checking a
+box only runs Scratch's read-only dependency lookup, without installing anything.
+
 ## Build and install
 
 Requires CMake 3.21+, a C++17 compiler, Qt 6 Widgets, and Scratchpkg. Qt Test is
@@ -35,6 +40,12 @@ git push
 ```
 
 ## Changes
+
+### 4.3.4 - 2026-10-29
+
+- Show selected packages and their pending dependencies below the command output.
+- Resolve dependencies with Scratchpkg asynchronously, using the configured repos.
+- Keep the preview current across checkbox changes, searches, and reloads.
 
 ### 4.3.3 - 2026-10-29
 
