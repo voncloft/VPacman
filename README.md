@@ -41,6 +41,11 @@ git push
 
 ## Changes
 
+### 4.3.5 - 2026-10-29
+
+- Show "Done." at the end of the output after successful package operations.
+- Report failed or crashed commands without displaying a success message.
+
 ### 4.3.4 - 2026-10-29
 
 - Show selected packages and their pending dependencies below the command output.

@@ -24,6 +24,20 @@ class VpacmanTest : public QObject {
         return nullptr;
     }
 private slots:
+    void completedCommandsReportSuccessAndFailure() {
+        MainWindow window;
+        auto *output = window.findChild<QTextEdit *>("textEdit");
+        auto *process = window.findChild<QProcess *>("packageCommandProcess");
+        QVERIFY(process);
+        // Exercise completion with harmless commands, never a package installation.
+        QVERIFY(QMetaObject::invokeMethod(&window, "command", Q_ARG(QString, "/usr/bin/printf package-output")));
+        QTRY_VERIFY(output->toPlainText().endsWith("\nDone.\n"));
+        QVERIFY(output->toPlainText().startsWith("package-output"));
+        QCOMPARE(process->state(), QProcess::NotRunning);
+        QVERIFY(QMetaObject::invokeMethod(&window, "command", Q_ARG(QString, "/usr/bin/false")));
+        QTRY_VERIFY(output->toPlainText().contains("Command failed (exit 1)."));
+        QVERIFY(!output->toPlainText().contains("Done."));
+    }
     void bundledIconRendersWithoutTheme() {
         const QIcon icon(":/icons/vpacman.svg");
         QVERIFY(!icon.isNull());

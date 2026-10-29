@@ -40,13 +40,22 @@ MainWindow::MainWindow(QWidget *parent, const QString &repoFile, const QString &
                                          + previewProcess->errorString() + ")");
     });
     m_process = new QProcess(this);
+    m_process->setObjectName("packageCommandProcess");
     m_process->setProcessChannelMode(QProcess::MergedChannels);
     connect(m_process, &QProcess::errorOccurred, this, [this](QProcess::ProcessError) {
         ui->textEdit->insertPlainText("\nProcess error: " + m_process->errorString() + "\n");
     });
-    connect(m_process, &QProcess::finished, this, [this](int code, QProcess::ExitStatus) {
+    connect(m_process, &QProcess::finished, this, [this](int code, QProcess::ExitStatus status) {
         setStdout();
-        ui->textEdit->insertPlainText(QString("\nCommand finished (exit %1).\n").arg(code));
+        ui->textEdit->moveCursor(QTextCursor::End);
+        if (status == QProcess::NormalExit && code == 0) {
+            ui->textEdit->insertPlainText("\nDone.\n");
+        } else if (status == QProcess::CrashExit) {
+            ui->textEdit->insertPlainText("\nCommand failed (process crashed).\n");
+        } else {
+            ui->textEdit->insertPlainText(QString("\nCommand failed (exit %1).\n").arg(code));
+        }
+        ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
         loadPackages();
     });
     connect(m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(setStdout()) );
